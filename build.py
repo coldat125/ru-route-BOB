@@ -4,8 +4,10 @@
 На выходе: dist/geoip.dat, dist/geosite.dat (только RU-категории, имена сохранены),
 плоские списки dist/ru-domains.txt, dist/ru-cidr.txt и dist/manifest.txt.
 """
+import base64
 import hashlib
 import ipaddress
+import json
 import pathlib
 import sys
 
@@ -43,6 +45,21 @@ KEEP_SITE = {
 # Алиасы на сводную direct: этих имён нет ни у Loyalsoldier, ни где-либо ещё,
 # но конфиги их просят (DirectSites: geosite:ru, geosite:geolocation-ru).
 ALIAS_DIRECT = ("ru", "geolocation-ru")
+
+# Клиентская пара файлов: ровно те две секции, на которые ссылается профиль
+# Happ, и ничего больше.
+#
+# Нужна из-за iOS: туннель там живёт в сетевом расширении с жёстким лимитом
+# памяти, и система убивает его без предупреждения — у человека гаснет сам
+# тумблер. Полные файлы этот лимит переполняли, причём в основном дублями:
+# geosite direct/ru/geolocation-ru — три имени одного списка, geoip ru и direct
+# отличаются на 18 приватных подсетей. Замер: 1 405 972 -> 433 770 байт.
+#
+# geoip берётся из direct, а не из ru: direct = ru + private, а private это
+# домашние подсети. Потеряешь их — у человека в туннель уедут роутер, принтер
+# и телевизор в своей же локальной сети.
+CLIENT_SITE = "ru"
+CLIENT_IP = "direct"
 
 # Секция PROXY: что гнать через туннель. Собирается из этих категорий апстрима.
 # Правится руками — состав тут вопрос твоей маршрутизации, а не свойство данных.
@@ -254,6 +271,14 @@ def main():
 
     (OUT / "geoip.dat").write_bytes(pack(ip_keep))
     (OUT / "geosite.dat").write_bytes(pack(site_keep))
+
+    # Клиентская пара: те же данные, только без секций, которые нужны ноде.
+    # Содержимое не отбирается заново — берутся те же списки, что уехали в
+    # полные файлы, поэтому маршрут ни для одного домена не меняется.
+    (OUT / "geosite-lite.dat").write_bytes(pack([make_site(CLIENT_SITE, direct_doms)]))
+    (OUT / "geoip-lite.dat").write_bytes(pack([make_geoip(CLIENT_IP, ip_direct)]))
+    manifest.append(f"geosite-lite:{CLIENT_SITE}\t{len(direct_doms)}\t(для клиентов)")
+    manifest.append(f"geoip-lite:{CLIENT_IP}\t{len(ip_direct)}\t(для клиентов)")
     write_lines(OUT / "ru-cidr.txt", sorted(set(cidr_lines)))
     write_lines(OUT / "ru-domains.txt", sorted(set(dom_lines)))
     write_lines(OUT / "direct-domains.txt", [f"{t}:{v}" for t, v in direct_doms])
@@ -270,6 +295,64 @@ def main():
 
     print(f"geoip:   {len(ip_keep)} стран, {len(set(cidr_lines))} подсетей")
     print(f"geosite: {len(site_keep)} категорий, {len(set(dom_lines))} доменов")
+
+
+def covered(entry, doms, fulls, kws):
+    """Лежит ли домен из профиля внутри секции. Порт и `*.` — не часть имени."""
+    e = entry.split(":")[0].removeprefix("*.").lower()
+    if e in doms or e in fulls:
+        return True
+    if any(e.endswith("." + d) for d in doms):
+        return True
+    return any(k in e for k in kws)
+
+
+def check_profile(path):
+    """Сверяет профиль Happ с клиентской парой файлов.
+
+    Ссылка на отсутствующую секцию — не мелочь: Xray с ней не стартует вообще,
+    то есть туннель у человека не поднимется, а в панели профиль применяется
+    сразу и всем. Поэтому проверка стоит до публикации, а не после жалоб.
+
+    На вход — файл со строкой `happ://routing/add/<base64>` или сам base64.
+    """
+    raw = pathlib.Path(path).read_text().strip().rsplit("/", 1)[-1]
+    prof = json.loads(base64.b64decode(raw))
+
+    site = {c.lower(): domains(fs) for c, _, fs in entries(OUT / "geosite-lite.dat")}
+    ip = {c.lower() for c, _, _ in entries(OUT / "geoip-lite.dat")}
+
+    refs = [(k, v) for k in ("DirectSites", "ProxySites", "BlockSites") for v in prof.get(k, [])]
+    refs += [(k, v) for k in ("DirectIp", "ProxyIp", "BlockIp") for v in prof.get(k, [])]
+
+    missing, plain = [], []
+    for key, value in refs:
+        if value.startswith("geosite:"):
+            if value.split(":", 1)[1].lower() not in site:
+                missing.append(f"{key}: {value}")
+        elif value.startswith("geoip:"):
+            if value.split(":", 1)[1].lower() not in ip:
+                missing.append(f"{key}: {value}")
+        elif key.endswith("Sites"):
+            plain.append(value)
+
+    doms = {v for t, v in site.get(CLIENT_SITE, []) if t == "domain"}
+    fulls = {v for t, v in site.get(CLIENT_SITE, []) if t == "full"}
+    kws = [v for t, v in site.get(CLIENT_SITE, []) if t == "keyword"]
+    dupes = [d for d in plain if covered(d, doms, fulls, kws)]
+
+    print(f"geosite-lite: {sorted(site)}   geoip-lite: {sorted(ip)}")
+    print(f"ссылок в профиле: {len(refs)}, доменов списком: {len(plain)}")
+    if dupes:
+        print(f"уже внутри geosite:{CLIENT_SITE}, можно убрать из профиля ({len(dupes)}):")
+        print("  " + ", ".join(dupes))
+    for d in plain:
+        if d not in dupes:
+            print(f"остаётся в профиле (в файле нет): {d}")
+    if missing:
+        sys.exit("профиль ссылается на секции, которых в клиентских файлах нет:\n  "
+                 + "\n  ".join(missing))
+    print("ok: все ссылки профиля есть в файлах")
 
 
 def demo():
@@ -294,8 +377,21 @@ def demo():
     net = b"\x0a\x04\x0a\x00\x00\x00\x10\x08"          # 10.0.0.0/8
     assert cidrs(fields(make_geoip("proxy", [net]))) == ["10.0.0.0/8"]
     assert fields(pack([raw]))[0][1] == raw
+    # covered: на нём держится ответ «этот домен из профиля уже в файле, можно
+    # убрать». Ошибётся в сторону «уже есть» — домен уедет в туннель молча.
+    assert covered("www.sber.ru", {"sber.ru"}, set(), [])          # родитель
+    assert covered("wildberries.ru:443", {"wildberries.ru"}, set(), [])  # порт не мешает
+    assert covered("*.vk.com", {"vk.com"}, set(), [])              # звёздочка не мешает
+    assert covered("a.example.net", set(), set(), ["example"])     # keyword
+    assert not covered("alfa.bank", {"alfabank.ru"}, set(), [])    # другой домен
+    assert not covered("ozoncdn.net", {"ozon.ru"}, set(), [])      # не поддомен
     print("ok")
 
 
 if __name__ == "__main__":
-    demo() if "--selftest" in sys.argv else main()
+    if "--selftest" in sys.argv:
+        demo()
+    elif "--check-profile" in sys.argv:
+        check_profile(sys.argv[sys.argv.index("--check-profile") + 1])
+    else:
+        main()

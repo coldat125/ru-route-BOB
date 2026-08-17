@@ -60,3 +60,21 @@ jobs:
           git config user.email github-actions@github.com
           git commit -m "update $(date -u +%F)"
           git push
+
+      # Ветка dist: файлы в корне, одна ревизия, force-push — история не растёт,
+      # зато их отдаёт jsDelivr, который из России доступнее, чем releases.
+      # Шаг последний в job: переключает ветку, после него working tree не тот.
+      - name: Publish dist branch
+        if: steps.check.outputs.changed == '1' || github.event_name != 'schedule'
+        run: |
+          git config user.name  github-actions
+          git config user.email github-actions@github.com
+          tmp=$(mktemp -d)
+          cp dist/* "$tmp/"
+          git checkout --orphan dist-branch
+          git rm -rf --cached . >/dev/null
+          rm -f .gitignore
+          cp "$tmp"/* .
+          git add -A geoip.dat geosite.dat *.txt
+          git commit -qm "dist $(date -u +%F)"
+          git push -f origin dist-branch:dist

@@ -20,6 +20,8 @@
 |---|---|
 | `dist/geoip.dat` | 9 секций: `direct`, `proxy`, `ru`, `private`, `google`, `facebook`, `twitter`, `netflix`, `telegram` |
 | `dist/geosite.dat` | 85 секций: `direct`, `proxy`, ~80 русских, `com`/`net`/`org` |
+| `dist/geoip-lite.dat` | одна секция `direct` — пара для клиентов, см. ниже |
+| `dist/geosite-lite.dat` | одна секция `ru` — пара для клиентов, см. ниже |
 | `dist/direct-domains.txt` | секция `direct` плоским списком (`domain:`/`full:`/`keyword:`/`regexp:`) |
 | `dist/proxy-domains.txt` | секция `proxy` плоским списком |
 | `dist/ru-cidr.txt` | подсети RU (без `private`) |
@@ -62,6 +64,33 @@ https://github.com/coldat125/ru-route-BOB/releases/latest/download/proxy-domains
 https://github.com/coldat125/ru-route-BOB/releases/latest/download/ru-cidr.txt
 https://github.com/coldat125/ru-route-BOB/releases/latest/download/proxy-cidr.txt
 ```
+
+## Пара для клиентов (`*-lite.dat`)
+
+Телефону нужны не все секции, а ровно те, на которые ссылается его профиль
+маршрутизации: `geosite:ru` и `geoip:direct`. Полные файлы клиент тоже примет, но
+на iOS туннель живёт в сетевом расширении с жёстким лимитом памяти, и система
+убивает его молча — у человека гаснет сам тумблер. Переполняли лимит в основном
+дубли: `geosite` `direct`/`ru`/`geolocation-ru` — три имени одного списка,
+`geoip` `ru` и `direct` расходятся на 18 приватных подсетей.
+
+Замер: **1 405 972 → 433 770 байт**, при этом маршрут не меняется ни для одного
+домена — данные те же, вырезаны только лишние секции.
+
+`geoip` берётся из `direct`, а не из `ru`: `direct` = `ru` + `private`, а
+`private` это домашние подсети. Без них роутер, принтер и телевизор в локальной
+сети уедут в туннель.
+
+Профиль Happ сверяется с этой парой перед публикацией — ссылка на отсутствующую
+секцию не даёт Xray подняться вообще, то есть туннель у человека не включится:
+
+```bash
+python3 build.py --check-profile routing.txt   # файл со строкой happ://routing/add/<base64>
+```
+
+Проверка печатает, какие домены из профиля уже лежат внутри `geosite:ru` (их
+можно убрать) и какие в файле отсутствуют — эти обязаны остаться в профиле
+списком: `ozoncdn.net`, `*.ozoncdn.net`, `alfa.bank`.
 
 ## Как отбираются категории
 
