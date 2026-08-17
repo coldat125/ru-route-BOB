@@ -31,6 +31,19 @@ SYNTH_TLD = ("com", "net", "org")
 INCLUDE = {"kaspersky", "rutracker", "drweb", "gismeteo", "ixbt", "2gis", "ucoz", "comssone"}
 EXCLUDE = {"coomer", "kemono", "truyen-hentai", "technogym", "category-finance"}
 
+# Секции, которые нужны клиентским конфигам как есть. Xray не стартует, если
+# конфиг ссылается на отсутствующую секцию, поэтому они переносятся из апстрима
+# целиком, даже если ничего русского в них нет.
+KEEP_SITE = {
+    "private", "category-ads", "win-spy",
+    "google", "google-play", "github", "youtube", "telegram",
+    "tiktok", "instagram", "facebook", "twitter", "openai",
+}
+
+# Алиасы на сводную direct: этих имён нет ни у Loyalsoldier, ни где-либо ещё,
+# но конфиги их просят (DirectSites: geosite:ru, geosite:geolocation-ru).
+ALIAS_DIRECT = ("ru", "geolocation-ru")
+
 # Секция PROXY: что гнать через туннель. Собирается из этих категорий апстрима.
 # Правится руками — состав тут вопрос твоей маршрутизации, а не свойство данных.
 PROXY_CATS = {
@@ -193,21 +206,24 @@ def main():
 
     site_keep, dom_lines = [], []
     ru_doms, proxy_doms, seen_site = set(), set(), set()
+    passthru = KEEP_SITE | PROXY_CATS
     for code, raw, fs in entries(SRC / "geosite.dat"):
         c = code.lower()
         seen_site.add(c)
         doms = domains(fs)
         if c in PROXY_CATS:
             proxy_doms.update(doms)
-        if not is_ru(code, doms):
+        ru = is_ru(code, doms)
+        if not (ru or c in passthru):
             continue
         site_keep.append(raw)
-        dom_lines += [f"{t}:{v}" for t, v in doms]
-        ru_doms.update(doms)
-        manifest.append(f"geosite:{c}\t{len(doms)}")
-    if not site_keep:
+        manifest.append(f"geosite:{c}\t{len(doms)}" + ("" if ru else "\t(перенос из апстрима)"))
+        if ru:
+            dom_lines += [f"{t}:{v}" for t, v in doms]
+            ru_doms.update(doms)
+    if not ru_doms:
         sys.exit("geosite.dat: не найдено ни одной русской категории — формат изменился?")
-    lost = PROXY_CATS - seen_site
+    lost = passthru - seen_site
     if lost:
         sys.exit(f"geosite.dat: нет категорий {sorted(lost)} — апстрим изменился?")
 
@@ -224,6 +240,11 @@ def main():
     proxy_sorted = sorted(proxy_doms)
     site_keep.append(make_site("direct", direct_doms))
     site_keep.append(make_site("proxy", proxy_sorted))
+    for alias in ALIAS_DIRECT:
+        if alias in seen_site:      # появилось в апстриме — своё не подсовываем
+            continue
+        site_keep.append(make_site(alias, direct_doms))
+        manifest.append(f"geosite:{alias}\t{len(direct_doms)}\t(алиас direct)")
     ip_keep.append(make_geoip("direct", ip_direct))
     ip_keep.append(make_geoip("proxy", ip_proxy))
     manifest.append(f"geosite:direct\t{len(direct_doms)}\t(сводная: все русские минус proxy)")
