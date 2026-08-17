@@ -42,8 +42,10 @@ jobs:
             echo "changed=1" >> $GITHUB_OUTPUT
           fi
 
+      # по расписанию — только если апстрим реально поменялся; на push и ручной запуск
+      # публикуем всегда, иначе правки build.py не доехали бы до релиза
       - name: Release
-        if: steps.check.outputs.changed == '1' || github.event_name == 'workflow_dispatch'
+        if: steps.check.outputs.changed == '1' || github.event_name != 'schedule'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
