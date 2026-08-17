@@ -31,11 +31,30 @@ jobs:
 
       - run: python3 build.py
 
+      - name: Changed?
+        id: check
+        run: |
+          git add -f dist/manifest.txt dist/sha256sum.txt
+          if git diff --cached --quiet; then
+            echo "changed=0" >> $GITHUB_OUTPUT
+            echo "апстрим не менялся, релиз не публикуем"
+          else
+            echo "changed=1" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Release
+        if: steps.check.outputs.changed == '1' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(date -u +%Y%m%d)
+          gh release create "$tag" dist/* --title "$tag" --notes-file dist/manifest.txt --latest \
+            || gh release upload "$tag" dist/* --clobber
+
       - name: Commit
+        if: steps.check.outputs.changed == '1'
         run: |
           git config user.name  github-actions
           git config user.email github-actions@github.com
-          git add dist
-          git diff --cached --quiet && echo "без изменений" && exit 0
           git commit -m "update $(date -u +%F)"
           git push

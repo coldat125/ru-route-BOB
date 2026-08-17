@@ -1,1 +1,4 @@
 src/
+dist/*
+!dist/manifest.txt
+!dist/sha256sum.txt

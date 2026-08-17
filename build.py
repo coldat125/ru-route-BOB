@@ -4,6 +4,7 @@
 На выходе: dist/geoip.dat, dist/geosite.dat (только RU-категории, имена сохранены),
 плоские списки dist/ru-domains.txt, dist/ru-cidr.txt и dist/manifest.txt.
 """
+import hashlib
 import ipaddress
 import pathlib
 import sys
@@ -156,6 +157,13 @@ def main():
     (OUT / "ru-cidr.txt").write_text("\n".join(sorted(set(cidr_lines))) + "\n")
     (OUT / "ru-domains.txt").write_text("\n".join(sorted(set(dom_lines))) + "\n")
     (OUT / "manifest.txt").write_text("\n".join(sorted(manifest)) + "\n")
+
+    # детектор изменений: manifest ловит только счётчики, хеши — само содержимое
+    sums = "".join(
+        f"{hashlib.sha256((OUT / n).read_bytes()).hexdigest()}  {n}\n"
+        for n in sorted(p.name for p in OUT.iterdir() if p.name != "sha256sum.txt")
+    )
+    (OUT / "sha256sum.txt").write_text(sums)
 
     print(f"geoip:   {len(ip_keep)} стран, {len(set(cidr_lines))} подсетей")
     print(f"geosite: {len(site_keep)} категорий, {len(set(dom_lines))} доменов")

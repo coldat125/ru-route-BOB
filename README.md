@@ -10,6 +10,7 @@
 | `dist/ru-domains.txt` | те же домены плоским списком (`domain:`/`full:`/`keyword:`/`regexp:`) |
 | `dist/ru-cidr.txt` | подсети RU плоским списком (без `private`) |
 | `dist/manifest.txt` | список категорий и количество записей — по его диффу видно, что изменилось |
+| `dist/sha256sum.txt` | контрольные суммы |
 
 10 МБ + 17 МБ исходников ужимаются до ~480 КБ.
 
@@ -28,11 +29,14 @@
 }
 ```
 
-Прямые ссылки после публикации:
+Файлы выкладываются в [релизы](https://github.com/coldat125/ru-route-BOB/releases) (тег — дата сборки),
+в самом репозитории лежат только манифест и контрольные суммы. Постоянные ссылки на свежую сборку:
 
 ```
-https://raw.githubusercontent.com/<user>/ru-route-BOB/main/dist/geosite.dat
-https://raw.githubusercontent.com/<user>/ru-route-BOB/main/dist/geoip.dat
+https://github.com/coldat125/ru-route-BOB/releases/latest/download/geoip.dat
+https://github.com/coldat125/ru-route-BOB/releases/latest/download/geosite.dat
+https://github.com/coldat125/ru-route-BOB/releases/latest/download/ru-domains.txt
+https://github.com/coldat125/ru-route-BOB/releases/latest/download/ru-cidr.txt
 ```
 
 ## Как отбираются категории
