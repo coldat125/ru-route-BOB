@@ -13,7 +13,10 @@
   "LastUpdated": "0",
   "DnsHosts": {},
   "DirectSites": [
-    "geosite:direct"
+    "geosite:direct",
+    "ozoncdn.net",
+    "*.ozoncdn.net",
+    "alfa.bank"
   ],
   "DirectIp": [
     "geoip:direct"
