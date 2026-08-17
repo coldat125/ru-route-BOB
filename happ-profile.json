@@ -1,0 +1,30 @@
+{
+  "Name": "ru-route-BOB",
+  "GlobalProxy": "true",
+  "RouteOrder": "block-proxy-direct",
+  "RemoteDNSType": "DoH",
+  "RemoteDNSDomain": "",
+  "RemoteDNSIP": "",
+  "DomesticDNSType": "DoU",
+  "DomesticDNSDomain": "",
+  "DomesticDNSIP": "",
+  "Geoipurl": "https://cdn.jsdelivr.net/gh/coldat125/ru-route-BOB@dist/geoip.dat",
+  "Geositeurl": "https://cdn.jsdelivr.net/gh/coldat125/ru-route-BOB@dist/geosite.dat",
+  "LastUpdated": "0",
+  "DnsHosts": {},
+  "DirectSites": [
+    "geosite:direct"
+  ],
+  "DirectIp": [
+    "geoip:direct"
+  ],
+  "ProxySites": [],
+  "ProxyIp": [],
+  "BlockSites": [
+    "geosite:category-ads"
+  ],
+  "BlockIp": [],
+  "DomainStrategy": "IPIfNonMatch",
+  "FakeDNS": "false",
+  "UseChunkFiles": "false"
+}

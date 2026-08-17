@@ -44,6 +44,12 @@ jobs:
 
       # по расписанию — только если апстрим реально поменялся; на push и ручной запуск
       # публикуем всегда, иначе правки build.py не доехали бы до релиза
+      # строго после Changed?: таймстамп меняется каждый запуск и иначе ломал бы
+      # детектор изменений. В sha256sum эти файлы не входят по той же причине.
+      - name: Happ routing link
+        if: steps.check.outputs.changed == '1' || github.event_name != 'schedule'
+        run: python3 happ_link.py
+
       - name: Release
         if: steps.check.outputs.changed == '1' || github.event_name != 'schedule'
         env:
