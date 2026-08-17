@@ -1,0 +1,41 @@
+name: update
+
+on:
+  schedule:
+    - cron: "30 2 * * *"   # каждый день, 02:30 UTC (05:30 МСК)
+  workflow_dispatch:
+  push:
+    paths: ["build.py", ".github/workflows/update.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download upstream
+        run: |
+          mkdir -p src
+          base=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download
+          curl -fsSL --retry 3 -o src/geoip.dat   $base/geoip.dat
+          curl -fsSL --retry 3 -o src/geosite.dat $base/geosite.dat
+
+      - run: python3 build.py --selftest
+
+      - run: python3 build.py
+
+      - name: Commit
+        run: |
+          git config user.name  github-actions
+          git config user.email github-actions@github.com
+          git add dist
+          git diff --cached --quiet && echo "без изменений" && exit 0
+          git commit -m "update $(date -u +%F)"
+          git push
