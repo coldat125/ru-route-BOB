@@ -113,6 +113,11 @@ def cidrs(fs):
     return out
 
 
+def write_lines(path, lines):
+    # только LF: иначе сборка на Windows и на runner'е дают разные хеши
+    path.write_bytes(("\n".join(lines) + "\n").encode())
+
+
 def is_ru(code, doms):
     c = code.lower()
     if c in EXCLUDE:
@@ -154,16 +159,16 @@ def main():
 
     (OUT / "geoip.dat").write_bytes(pack(ip_keep))
     (OUT / "geosite.dat").write_bytes(pack(site_keep))
-    (OUT / "ru-cidr.txt").write_text("\n".join(sorted(set(cidr_lines))) + "\n")
-    (OUT / "ru-domains.txt").write_text("\n".join(sorted(set(dom_lines))) + "\n")
-    (OUT / "manifest.txt").write_text("\n".join(sorted(manifest)) + "\n")
+    write_lines(OUT / "ru-cidr.txt", sorted(set(cidr_lines)))
+    write_lines(OUT / "ru-domains.txt", sorted(set(dom_lines)))
+    write_lines(OUT / "manifest.txt", sorted(manifest))
 
     # детектор изменений: manifest ловит только счётчики, хеши — само содержимое
     sums = "".join(
         f"{hashlib.sha256((OUT / n).read_bytes()).hexdigest()}  {n}\n"
         for n in sorted(p.name for p in OUT.iterdir() if p.name != "sha256sum.txt")
     )
-    (OUT / "sha256sum.txt").write_text(sums)
+    (OUT / "sha256sum.txt").write_bytes(sums.encode())
 
     print(f"geoip:   {len(ip_keep)} стран, {len(set(cidr_lines))} подсетей")
     print(f"geosite: {len(site_keep)} категорий, {len(set(dom_lines))} доменов")
