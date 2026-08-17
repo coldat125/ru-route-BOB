@@ -12,8 +12,10 @@ import sys
 SRC = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "src")
 OUT = pathlib.Path("dist")
 
-# geoip: коды стран, которые забираем
-GEOIP_CODES = {"ru", "private"}
+# geoip: что идёт напрямую и что через туннель. cloudflare/cloudfront/fastly
+# намеренно не в proxy — это общие CDN, по IP там пополам русских сайтов.
+GEOIP_DIRECT = {"ru", "private"}
+GEOIP_PROXY = {"google", "facebook", "twitter", "netflix", "telegram"}
 
 # geosite: категория берётся, если имя содержит токен "ru" (category-gov-ru,
 # category-media-ru-blocked, tld-ru...) ИЛИ >=25% её доменов сидят в русских TLD.
@@ -28,6 +30,17 @@ SYNTH_TLD = ("com", "net", "org")
 # правило промахивается — правим руками. Оба списка регистронезависимы.
 INCLUDE = {"kaspersky", "rutracker", "drweb", "gismeteo", "ixbt", "2gis", "ucoz", "comssone"}
 EXCLUDE = {"coomer", "kemono", "truyen-hentai", "technogym", "category-finance"}
+
+# Секция PROXY: что гнать через туннель. Собирается из этих категорий апстрима.
+# Правится руками — состав тут вопрос твоей маршрутизации, а не свойство данных.
+PROXY_CATS = {
+    "category-media-ru-blocked", "category-vpnservices",
+    "youtube", "meta", "facebook", "instagram", "whatsapp",
+    "twitter", "x", "discord", "signal", "viber", "linkedin",
+    "openai", "anthropic", "category-ai-!cn",
+    "spotify", "soundcloud", "netflix", "twitch", "patreon",
+    "reddit", "medium", "notion", "tiktok", "bbc",
+}
 
 
 def uvarint(b, i):
@@ -118,11 +131,22 @@ def cidrs(fs):
     return out
 
 
-def synth_site(tld):
-    """GeoSite{country_code: TLD, domain: [{type: Domain, value: tld}]} вручную."""
-    dom = b"\x08\x02\x12" + put_uvarint(len(tld)) + tld.encode()   # type=2 (domain), value
-    return (b"\x0a" + put_uvarint(len(tld)) + tld.upper().encode()
-            + b"\x12" + put_uvarint(len(dom)) + dom)
+TYPE_ID = {v: k for k, v in DOM_TYPE.items()}
+
+
+def make_site(code, doms):
+    """Собирает GeoSite{country_code, domain: [...]} из списка (тип, значение)."""
+    body = b""
+    for t, v in doms:
+        d = b"\x08" + put_uvarint(TYPE_ID[t]) + b"\x12" + put_uvarint(len(v)) + v.encode()
+        body += b"\x12" + put_uvarint(len(d)) + d
+    return b"\x0a" + put_uvarint(len(code)) + code.upper().encode() + body
+
+
+def make_geoip(code, raw_cidrs):
+    """GeoIP{country_code, cidr: [...]} из уже закодированных CIDR-сообщений."""
+    body = b"".join(b"\x12" + put_uvarint(len(c)) + c for c in raw_cidrs)
+    return b"\x0a" + put_uvarint(len(code)) + code.upper().encode() + body
 
 
 def write_lines(path, lines):
@@ -146,41 +170,74 @@ def main():
     OUT.mkdir(exist_ok=True)
     manifest = []
 
-    ip_keep, cidr_lines = [], []
+    ip_keep, cidr_lines, ip_direct, ip_proxy, ip_proxy_lines = [], [], [], [], []
+    seen_ip = set()
     for code, raw, fs in entries(SRC / "geoip.dat"):
-        if code.lower() not in GEOIP_CODES:
+        c = code.lower()
+        seen_ip.add(c)
+        if c not in GEOIP_DIRECT | GEOIP_PROXY:
             continue
-        nets = cidrs(fs)
+        raw_nets = [v for f, v in fs if f == 2]      # сырые CIDR — переносим как есть
         ip_keep.append(raw)
-        if code.lower() == "ru":  # private в плоский список не мешаем
-            cidr_lines += nets
-        manifest.append(f"geoip:{code.lower()}\t{len(nets)}")
-    if len(ip_keep) != len(GEOIP_CODES):
-        sys.exit(f"geoip.dat: нашлось {len(ip_keep)} из {len(GEOIP_CODES)} нужных кодов — формат вышестоящего файла изменился?")
+        if c in GEOIP_DIRECT:
+            ip_direct += raw_nets
+            if c == "ru":                            # private в плоский список не мешаем
+                cidr_lines += cidrs(fs)
+        else:
+            ip_proxy += raw_nets
+            ip_proxy_lines += cidrs(fs)
+        manifest.append(f"geoip:{c}\t{len(raw_nets)}")
+    lost = (GEOIP_DIRECT | GEOIP_PROXY) - seen_ip
+    if lost:
+        sys.exit(f"geoip.dat: нет секций {sorted(lost)} — апстрим изменился?")
 
     site_keep, dom_lines = [], []
+    ru_doms, proxy_doms, seen_site = set(), set(), set()
     for code, raw, fs in entries(SRC / "geosite.dat"):
+        c = code.lower()
+        seen_site.add(c)
         doms = domains(fs)
+        if c in PROXY_CATS:
+            proxy_doms.update(doms)
         if not is_ru(code, doms):
             continue
         site_keep.append(raw)
         dom_lines += [f"{t}:{v}" for t, v in doms]
-        manifest.append(f"geosite:{code.lower()}\t{len(doms)}")
+        ru_doms.update(doms)
+        manifest.append(f"geosite:{c}\t{len(doms)}")
     if not site_keep:
         sys.exit("geosite.dat: не найдено ни одной русской категории — формат изменился?")
+    lost = PROXY_CATS - seen_site
+    if lost:
+        sys.exit(f"geosite.dat: нет категорий {sorted(lost)} — апстрим изменился?")
 
-    have = {c.lower() for c, _, _ in entries(SRC / "geosite.dat")}
     for tld in SYNTH_TLD:
-        if tld in have:   # появилась в апстриме — свою не подсовываем
+        if tld in seen_site:   # появилась в апстриме — свою не подсовываем
             continue
-        site_keep.append(synth_site(tld))
+        site_keep.append(make_site(tld, [("domain", tld)]))
         dom_lines.append(f"domain:{tld}")
         manifest.append(f"geosite:{tld}\t1\t(синтетическая: весь .{tld})")
+
+    # Сводные секции: одно имя на направление. Пересечение вычитаем из direct,
+    # чтобы списки не спорили между собой.
+    direct_doms = sorted(ru_doms - proxy_doms)
+    proxy_sorted = sorted(proxy_doms)
+    site_keep.append(make_site("direct", direct_doms))
+    site_keep.append(make_site("proxy", proxy_sorted))
+    ip_keep.append(make_geoip("direct", ip_direct))
+    ip_keep.append(make_geoip("proxy", ip_proxy))
+    manifest.append(f"geosite:direct\t{len(direct_doms)}\t(сводная: все русские минус proxy)")
+    manifest.append(f"geosite:proxy\t{len(proxy_sorted)}\t(сводная: из {len(PROXY_CATS)} категорий)")
+    manifest.append(f"geoip:direct\t{len(ip_direct)}\t(сводная: {', '.join(sorted(GEOIP_DIRECT))})")
+    manifest.append(f"geoip:proxy\t{len(ip_proxy)}\t(сводная: {', '.join(sorted(GEOIP_PROXY))})")
 
     (OUT / "geoip.dat").write_bytes(pack(ip_keep))
     (OUT / "geosite.dat").write_bytes(pack(site_keep))
     write_lines(OUT / "ru-cidr.txt", sorted(set(cidr_lines)))
     write_lines(OUT / "ru-domains.txt", sorted(set(dom_lines)))
+    write_lines(OUT / "direct-domains.txt", [f"{t}:{v}" for t, v in direct_doms])
+    write_lines(OUT / "proxy-domains.txt", [f"{t}:{v}" for t, v in proxy_sorted])
+    write_lines(OUT / "proxy-cidr.txt", sorted(set(ip_proxy_lines)))
     write_lines(OUT / "manifest.txt", sorted(manifest))
 
     # детектор изменений: manifest ловит только счётчики, хеши — само содержимое
@@ -207,10 +264,14 @@ def demo():
     assert not is_ru("RUST", [("domain", "rust-lang.org")])
     assert not is_ru("KEMONO", [("domain", "kemono.su")])
     assert is_ru("KASPERSKY", [("domain", "kaspersky.com")])
-    raw = synth_site("com")
+    raw = make_site("com", [("domain", "com")])
     fs = fields(raw)
     assert next(v for f, v in fs if f == 1) == b"COM"
     assert domains(fs) == [("domain", "com")]
+    mixed = [("domain", "a.ru"), ("full", "b.ru"), ("keyword", "c"), ("regexp", "d.+")]
+    assert domains(fields(make_site("direct", mixed))) == mixed
+    net = b"\x0a\x04\x0a\x00\x00\x00\x10\x08"          # 10.0.0.0/8
+    assert cidrs(fields(make_geoip("proxy", [net]))) == ["10.0.0.0/8"]
     assert fields(pack([raw]))[0][1] == raw
     print("ok")
 

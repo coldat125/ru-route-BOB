@@ -1,5 +1,12 @@
+geoip:direct	25179	(сводная: private, ru)
+geoip:facebook	122
+geoip:google	7902
+geoip:netflix	114
 geoip:private	18
+geoip:proxy	8170	(сводная: facebook, google, netflix, telegram, twitter)
 geoip:ru	25161
+geoip:telegram	12
+geoip:twitter	20
 geosite:2ch	4
 geosite:2gis	14
 geosite:autoru	5
@@ -27,6 +34,7 @@ geosite:cdek	3
 geosite:cian	7
 geosite:com	1	(синтетическая: весь .com)
 geosite:comssone	9
+geosite:direct	1937	(сводная: все русские минус proxy)
 geosite:drweb	12
 geosite:dzen	4
 geosite:envybox	21
@@ -61,6 +69,7 @@ geosite:oskelly	2
 geosite:overclockers-ru	12
 geosite:ozon	63
 geosite:positive-technologies	3
+geosite:proxy	1363	(сводная: из 26 категорий)
 geosite:regru	3
 geosite:rossiyasegodnya	17
 geosite:rostelecom	9
