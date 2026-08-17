@@ -6,7 +6,7 @@
 | Файл | Что внутри |
 |---|---|
 | `dist/geoip.dat` | `geoip:ru` (~25 тыс. подсетей) + `geoip:private` |
-| `dist/geosite.dat` | ~80 русских категорий: `category-ru`, `category-gov-ru`, `category-bank-ru`, `tld-ru`, `yandex`, `vk`, `sber`, `ozon`, `wildberries`, … |
+| `dist/geosite.dat` | ~83 категории: русские: `category-ru`, `category-gov-ru`, `category-bank-ru`, `tld-ru`, `yandex`, `vk`, `sber`, `ozon`, `wildberries`, … |
 | `dist/ru-domains.txt` | те же домены плоским списком (`domain:`/`full:`/`keyword:`/`regexp:`) |
 | `dist/ru-cidr.txt` | подсети RU плоским списком (без `private`) |
 | `dist/manifest.txt` | список категорий и количество записей — по его диффу видно, что изменилось |
@@ -45,6 +45,12 @@ https://github.com/coldat125/ru-route-BOB/releases/latest/download/ru-cidr.txt
 `tld-ru`) **или** ≥25 % её доменов сидят в `.ru/.su/.рф/.moscow/.tatar`.
 Правило промахивается на брендах без русского домена и на чужих сайтах в `.su` —
 для них в начале `build.py` есть два коротких списка `INCLUDE` / `EXCLUDE`, правятся руками.
+
+Дополнительно добавляются синтетические секции `geosite:com`, `geosite:net`, `geosite:org` —
+по одному правилу `domain:<tld>`, то есть «весь этот TLD». У Loyalsoldier таких секций нет,
+а клиентские конфиги на них ссылаются, и Xray без них не стартует вообще
+(«отсутствует секция COM в подключенном файле geosite.dat»). Список — `SYNTH_TLD` в `build.py`;
+если секция с таким именем появится в апстриме, своя не подставляется.
 
 Локальная сборка:
 

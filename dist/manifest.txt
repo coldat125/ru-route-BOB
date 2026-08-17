@@ -25,6 +25,7 @@ geosite:category-tech-media-ru	34
 geosite:category-travel-ru	25
 geosite:cdek	3
 geosite:cian	7
+geosite:com	1	(синтетическая: весь .com)
 geosite:comssone	9
 geosite:drweb	12
 geosite:dzen	4
@@ -50,10 +51,12 @@ geosite:mosmetro	2
 geosite:mts-ru	12
 geosite:mvideo	3
 geosite:myoffice-ru	2
+geosite:net	1	(синтетическая: весь .net)
 geosite:netcraze	5
 geosite:nic-ru	4
 geosite:ok	19
 geosite:okko	4
+geosite:org	1	(синтетическая: весь .org)
 geosite:oskelly	2
 geosite:overclockers-ru	12
 geosite:ozon	63

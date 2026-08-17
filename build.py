@@ -20,6 +20,11 @@ GEOIP_CODES = {"ru", "private"}
 RU_TLD = (".ru", ".su", ".xn--p1ai", ".moscow", ".tatar", ".xn--80adxhks", ".xn--p1acf")
 RU_SHARE = 0.25
 
+# Секции-заглушки под TLD: клиентские конфиги ссылаются на geosite:com/net/org,
+# а у Loyalsoldier таких секций нет и Xray без них не стартует.
+# Каждая = одно правило domain:<tld>, то есть «весь этот TLD».
+SYNTH_TLD = ("com", "net", "org")
+
 # правило промахивается — правим руками. Оба списка регистронезависимы.
 INCLUDE = {"kaspersky", "rutracker", "drweb", "gismeteo", "ixbt", "2gis", "ucoz", "comssone"}
 EXCLUDE = {"coomer", "kemono", "truyen-hentai", "technogym", "category-finance"}
@@ -113,6 +118,13 @@ def cidrs(fs):
     return out
 
 
+def synth_site(tld):
+    """GeoSite{country_code: TLD, domain: [{type: Domain, value: tld}]} вручную."""
+    dom = b"\x08\x02\x12" + put_uvarint(len(tld)) + tld.encode()   # type=2 (domain), value
+    return (b"\x0a" + put_uvarint(len(tld)) + tld.upper().encode()
+            + b"\x12" + put_uvarint(len(dom)) + dom)
+
+
 def write_lines(path, lines):
     # только LF: иначе сборка на Windows и на runner'е дают разные хеши
     path.write_bytes(("\n".join(lines) + "\n").encode())
@@ -157,6 +169,14 @@ def main():
     if not site_keep:
         sys.exit("geosite.dat: не найдено ни одной русской категории — формат изменился?")
 
+    have = {c.lower() for c, _, _ in entries(SRC / "geosite.dat")}
+    for tld in SYNTH_TLD:
+        if tld in have:   # появилась в апстриме — свою не подсовываем
+            continue
+        site_keep.append(synth_site(tld))
+        dom_lines.append(f"domain:{tld}")
+        manifest.append(f"geosite:{tld}\t1\t(синтетическая: весь .{tld})")
+
     (OUT / "geoip.dat").write_bytes(pack(ip_keep))
     (OUT / "geosite.dat").write_bytes(pack(site_keep))
     write_lines(OUT / "ru-cidr.txt", sorted(set(cidr_lines)))
@@ -187,6 +207,11 @@ def demo():
     assert not is_ru("RUST", [("domain", "rust-lang.org")])
     assert not is_ru("KEMONO", [("domain", "kemono.su")])
     assert is_ru("KASPERSKY", [("domain", "kaspersky.com")])
+    raw = synth_site("com")
+    fs = fields(raw)
+    assert next(v for f, v in fs if f == 1) == b"COM"
+    assert domains(fs) == [("domain", "com")]
+    assert fields(pack([raw]))[0][1] == raw
     print("ok")
 
 
