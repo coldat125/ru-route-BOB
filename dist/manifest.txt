@@ -36,7 +36,7 @@ geosite:category-retail-ru	82
 geosite:category-ru	1104
 geosite:category-tech-media-ru	34
 geosite:category-travel-ru	25
-geosite:category-vpnservices	67	(перенос из апстрима)
+geosite:category-vpnservices	69	(перенос из апстрима)
 geosite:cdek	3
 geosite:cian	7
 geosite:com	1	(синтетическая: весь .com)
@@ -91,7 +91,7 @@ geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
 geosite:private	131	(перенос из апстрима)
-geosite:proxy	1363	(сводная: из 26 категорий)
+geosite:proxy	1365	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
