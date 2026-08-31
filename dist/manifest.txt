@@ -19,7 +19,7 @@ geosite:bbc	28	(перенос из апстрима)
 geosite:beget	2
 geosite:bestchange	3
 geosite:betboom	2
-geosite:category-ads	832	(перенос из апстрима)
+geosite:category-ads	852	(перенос из апстрима)
 geosite:category-ai-!cn	180	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	313
