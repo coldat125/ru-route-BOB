@@ -1,0 +1,130 @@
+geoip-lite:direct	25184	(для клиентов)
+geoip:direct	25184	(сводная: private, ru)
+geoip:facebook	121
+geoip:google	8142
+geoip:netflix	120
+geoip:private	18
+geoip:proxy	8415	(сводная: facebook, google, netflix, telegram, twitter)
+geoip:ru	25166
+geoip:telegram	12
+geoip:twitter	20
+geosite-lite:ru	1937	(для клиентов)
+geosite:2ch	4
+geosite:2gis	14
+geosite:anthropic	8	(перенос из апстрима)
+geosite:autoru	5
+geosite:aviasales	3
+geosite:avito	3
+geosite:bbc	28	(перенос из апстрима)
+geosite:beget	2
+geosite:bestchange	3
+geosite:betboom	2
+geosite:category-ads	852	(перенос из апстрима)
+geosite:category-ai-!cn	180	(перенос из апстрима)
+geosite:category-ai-ru	12
+geosite:category-bank-ru	313
+geosite:category-betting-ru	13
+geosite:category-ecommerce-ru	199
+geosite:category-education-ru	19
+geosite:category-entertainment-ru	31
+geosite:category-forums-ru	10
+geosite:category-gov-ru	142
+geosite:category-media-ru	141
+geosite:category-media-ru-blocked	131
+geosite:category-medicine-ru	34
+geosite:category-retail-ru	82
+geosite:category-ru	1104
+geosite:category-tech-media-ru	34
+geosite:category-travel-ru	25
+geosite:category-vpnservices	69	(перенос из апстрима)
+geosite:cdek	3
+geosite:cian	7
+geosite:com	1	(синтетическая: весь .com)
+geosite:comssone	9
+geosite:direct	1937	(сводная: все русские минус proxy)
+geosite:discord	28	(перенос из апстрима)
+geosite:drweb	12
+geosite:dzen	4
+geosite:envybox	21
+geosite:facebook	396	(перенос из апстрима)
+geosite:fonbet	4
+geosite:funpay	3
+geosite:genotek-ru	9
+geosite:geolocation-ru	1937	(алиас direct)
+geosite:gismeteo	7
+geosite:github	64	(перенос из апстрима)
+geosite:google	1073	(перенос из апстрима)
+geosite:google-play	10	(перенос из апстрима)
+geosite:group-ib	30
+geosite:headhunter	8
+geosite:ideco-ru	3
+geosite:instagram	74	(перенос из апстрима)
+geosite:ixbt	9
+geosite:kaspersky	132
+geosite:kinopoisk	2
+geosite:kontur	5
+geosite:ligastavok	4
+geosite:linkedin	12	(перенос из апстрима)
+geosite:magnit	4
+geosite:mailru	300
+geosite:mailru-group	300
+geosite:medium	2	(перенос из апстрима)
+geosite:megafon	12
+geosite:meta	554	(перенос из апстрима)
+geosite:mindbox	22
+geosite:mosmetro	2
+geosite:mts-ru	12
+geosite:mvideo	3
+geosite:myoffice-ru	2
+geosite:net	1	(синтетическая: весь .net)
+geosite:netcraze	5
+geosite:netflix	28	(перенос из апстрима)
+geosite:nic-ru	4
+geosite:notion	7	(перенос из апстрима)
+geosite:ok	19
+geosite:okko	4
+geosite:openai	23	(перенос из апстрима)
+geosite:org	1	(синтетическая: весь .org)
+geosite:oskelly	2
+geosite:overclockers-ru	12
+geosite:ozon	63
+geosite:patreon	4	(перенос из апстрима)
+geosite:positive-technologies	3
+geosite:private	131	(перенос из апстрима)
+geosite:proxy	1371	(сводная: из 26 категорий)
+geosite:reddit	12	(перенос из апстрима)
+geosite:regru	3
+geosite:rossiyasegodnya	17
+geosite:rostelecom	9
+geosite:ru	1937	(алиас direct)
+geosite:rutracker	9
+geosite:rutube	4
+geosite:sber	98
+geosite:selectel	24
+geosite:servicepipe	2
+geosite:signal	8	(перенос из апстрима)
+geosite:skyeng	2
+geosite:sokolov	2
+geosite:soundcloud	3	(перенос из апстрима)
+geosite:spotify	28	(перенос из апстрима)
+geosite:t2-ru	3
+geosite:tbank-ru	112
+geosite:telegram	21	(перенос из апстрима)
+geosite:tiktok	36	(перенос из апстрима)
+geosite:timeweb	3
+geosite:tld-ru	11
+geosite:twitch	34	(перенос из апстрима)
+geosite:twitter	24	(перенос из апстрима)
+geosite:ucoz	37
+geosite:viber	6	(перенос из апстрима)
+geosite:vk	52
+geosite:whatsapp	13	(перенос из апстрима)
+geosite:whoosh	2
+geosite:wildberries	114
+geosite:win-spy	327	(перенос из апстрима)
+geosite:wink	5
+geosite:winline	3
+geosite:x	27	(перенос из апстрима)
+geosite:x5	35
+geosite:yandex	132
+geosite:youtube	178	(перенос из апстрима)
