@@ -11,7 +11,7 @@ geoip:twitter	19
 geosite-lite:ru	1938	(для клиентов)
 geosite:2ch	4
 geosite:2gis	14
-geosite:anthropic	8	(перенос из апстрима)
+geosite:anthropic	9	(перенос из апстрима)
 geosite:autoru	5
 geosite:aviasales	3
 geosite:avito	3
@@ -20,7 +20,7 @@ geosite:beget	2
 geosite:bestchange	3
 geosite:betboom	2
 geosite:category-ads	851	(перенос из апстрима)
-geosite:category-ai-!cn	188	(перенос из апстрима)
+geosite:category-ai-!cn	189	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	313
 geosite:category-betting-ru	13
@@ -91,7 +91,7 @@ geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
 geosite:private	131	(перенос из апстрима)
-geosite:proxy	1381	(сводная: из 26 категорий)
+geosite:proxy	1382	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
