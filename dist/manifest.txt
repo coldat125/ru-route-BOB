@@ -1,11 +1,11 @@
-geoip-lite:direct	25112	(для клиентов)
-geoip:direct	25112	(сводная: private, ru)
-geoip:facebook	120
-geoip:google	8483
+geoip-lite:direct	25189	(для клиентов)
+geoip:direct	25189	(сводная: private, ru)
+geoip:facebook	119
+geoip:google	8495
 geoip:netflix	122
 geoip:private	18
-geoip:proxy	8756	(сводная: facebook, google, netflix, telegram, twitter)
-geoip:ru	25094
+geoip:proxy	8767	(сводная: facebook, google, netflix, telegram, twitter)
+geoip:ru	25171
 geoip:telegram	12
 geoip:twitter	19
 geosite-lite:ru	1938	(для клиентов)
@@ -19,7 +19,7 @@ geosite:bbc	28	(перенос из апстрима)
 geosite:beget	2
 geosite:bestchange	3
 geosite:betboom	2
-geosite:category-ads	851	(перенос из апстрима)
+geosite:category-ads	844	(перенос из апстрима)
 geosite:category-ai-!cn	189	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	313
@@ -52,7 +52,7 @@ geosite:funpay	3
 geosite:genotek-ru	9
 geosite:geolocation-ru	1938	(алиас direct)
 geosite:gismeteo	7
-geosite:github	64	(перенос из апстрима)
+geosite:github	65	(перенос из апстрима)
 geosite:google	1077	(перенос из апстрима)
 geosite:google-play	10	(перенос из апстрима)
 geosite:group-ib	30
@@ -70,7 +70,7 @@ geosite:mailru	300
 geosite:mailru-group	300
 geosite:medium	2	(перенос из апстрима)
 geosite:megafon	12
-geosite:meta	557	(перенос из апстрима)
+geosite:meta	555	(перенос из апстрима)
 geosite:mindbox	22
 geosite:mosmetro	2
 geosite:mts-ru	12
@@ -91,7 +91,7 @@ geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
 geosite:private	131	(перенос из апстрима)
-geosite:proxy	1382	(сводная: из 26 категорий)
+geosite:proxy	1380	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
@@ -118,7 +118,7 @@ geosite:twitter	24	(перенос из апстрима)
 geosite:ucoz	37
 geosite:viber	6	(перенос из апстрима)
 geosite:vk	52
-geosite:whatsapp	13	(перенос из апстрима)
+geosite:whatsapp	11	(перенос из апстрима)
 geosite:whoosh	2
 geosite:wildberries	114
 geosite:win-spy	327	(перенос из апстрима)
