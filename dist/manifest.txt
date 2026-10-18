@@ -8,7 +8,7 @@ geoip:proxy	8824	(сводная: facebook, google, netflix, telegram, twitter)
 geoip:ru	25194
 geoip:telegram	12
 geoip:twitter	19
-geosite-lite:ru	2082	(для клиентов)
+geosite-lite:ru	2083	(для клиентов)
 geosite:2ch	4
 geosite:2gis	14
 geosite:anthropic	9	(перенос из апстрима)
@@ -20,7 +20,7 @@ geosite:beget	2
 geosite:bestchange	3
 geosite:betboom	2
 geosite:category-ads	843	(перенос из апстрима)
-geosite:category-ai-!cn	190	(перенос из апстрима)
+geosite:category-ai-!cn	193	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	356
 geosite:category-betting-ru	13
@@ -33,7 +33,7 @@ geosite:category-media-ru	141
 geosite:category-media-ru-blocked	131
 geosite:category-medicine-ru	34
 geosite:category-retail-ru	82
-geosite:category-ru	1123
+geosite:category-ru	1125
 geosite:category-tech-media-ru	34
 geosite:category-travel-ru	25
 geosite:category-vpnservices	69	(перенос из апстрима)
@@ -41,7 +41,7 @@ geosite:cdek	3
 geosite:cian	7
 geosite:com	1	(синтетическая: весь .com)
 geosite:comssone	9
-geosite:direct	2082	(сводная: все русские минус proxy)
+geosite:direct	2083	(сводная: все русские минус proxy)
 geosite:discord	28	(перенос из апстрима)
 geosite:drweb	12
 geosite:dzen	4
@@ -50,7 +50,7 @@ geosite:facebook	397	(перенос из апстрима)
 geosite:fonbet	4
 geosite:funpay	3
 geosite:genotek-ru	9
-geosite:geolocation-ru	2082	(алиас direct)
+geosite:geolocation-ru	2083	(алиас direct)
 geosite:gismeteo	7
 geosite:github	65	(перенос из апстрима)
 geosite:google	1077	(перенос из апстрима)
@@ -83,20 +83,20 @@ geosite:nic-ru	4
 geosite:notion	7	(перенос из апстрима)
 geosite:ok	19
 geosite:okko	4
-geosite:openai	23	(перенос из апстрима)
+geosite:openai	24	(перенос из апстрима)
 geosite:org	1	(синтетическая: весь .org)
 geosite:oskelly	2
 geosite:overclockers-ru	12
 geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
-geosite:private	131	(перенос из апстрима)
-geosite:proxy	1381	(сводная: из 26 категорий)
+geosite:private	133	(перенос из апстрима)
+geosite:proxy	1384	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
 geosite:rostelecom	9
-geosite:ru	2082	(алиас direct)
+geosite:ru	2083	(алиас direct)
 geosite:rutracker	9
 geosite:rutube	4
 geosite:sber	100
@@ -112,7 +112,6 @@ geosite:t2-ru	3
 geosite:tbank-ru	112
 geosite:telegram	21	(перенос из апстрима)
 geosite:tiktok	37	(перенос из апстрима)
-geosite:timeweb	3
 geosite:tld-ru	11
 geosite:twitch	34	(перенос из апстрима)
 geosite:twitter	24	(перенос из апстрима)
