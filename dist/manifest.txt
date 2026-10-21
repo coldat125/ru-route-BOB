@@ -8,13 +8,13 @@ geoip:proxy	8824	(сводная: facebook, google, netflix, telegram, twitter)
 geoip:ru	25194
 geoip:telegram	12
 geoip:twitter	19
-geosite-lite:ru	2128	(для клиентов)
+geosite-lite:ru	2143	(для клиентов)
 geosite:2ch	4
 geosite:2gis	14
 geosite:anthropic	9	(перенос из апстрима)
 geosite:autoru	5
 geosite:aviasales	3
-geosite:avito	3
+geosite:avito	5
 geosite:bbc	28	(перенос из апстрима)
 geosite:beget	13
 geosite:bestchange	3
@@ -25,16 +25,16 @@ geosite:category-ai-!cn	194	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	356
 geosite:category-betting-ru	13
-geosite:category-ecommerce-ru	199
+geosite:category-ecommerce-ru	201
 geosite:category-education-ru	20
 geosite:category-entertainment-ru	34
 geosite:category-forums-ru	11
 geosite:category-gov-ru	145
 geosite:category-media-ru	148
 geosite:category-media-ru-blocked	131
-geosite:category-medicine-ru	34
+geosite:category-medicine-ru	45
 geosite:category-retail-ru	82
-geosite:category-ru	1152
+geosite:category-ru	1158
 geosite:category-tech-media-ru	34
 geosite:category-travel-ru	25
 geosite:category-vpnservices	69	(перенос из апстрима)
@@ -42,7 +42,7 @@ geosite:cdek	3
 geosite:cian	7
 geosite:com	1	(синтетическая: весь .com)
 geosite:comssone	9
-geosite:direct	2128	(сводная: все русские минус proxy)
+geosite:direct	2143	(сводная: все русские минус proxy)
 geosite:discord	28	(перенос из апстрима)
 geosite:drweb	12
 geosite:dzen	4
@@ -51,7 +51,7 @@ geosite:facebook	397	(перенос из апстрима)
 geosite:fonbet	4
 geosite:funpay	3
 geosite:genotek-ru	9
-geosite:geolocation-ru	2128	(алиас direct)
+geosite:geolocation-ru	2143	(алиас direct)
 geosite:gismeteo	7
 geosite:github	65	(перенос из апстрима)
 geosite:google	1077	(перенос из апстрима)
@@ -96,7 +96,7 @@ geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
 geosite:rostelecom	9
-geosite:ru	2128	(алиас direct)
+geosite:ru	2143	(алиас direct)
 geosite:rutracker	9
 geosite:rutube	4
 geosite:sber	100
