@@ -20,7 +20,7 @@ geosite:beget	13
 geosite:bestchange	3
 geosite:betboom	2
 geosite:bitrix	11
-geosite:category-ads	844	(перенос из апстрима)
+geosite:category-ads	845	(перенос из апстрима)
 geosite:category-ai-!cn	205	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	356
