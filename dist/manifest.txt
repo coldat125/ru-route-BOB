@@ -91,7 +91,7 @@ geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
 geosite:private	133	(перенос из апстрима)
-geosite:proxy	1407	(сводная: из 26 категорий)
+geosite:proxy	1410	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
@@ -111,7 +111,7 @@ geosite:spotify	28	(перенос из апстрима)
 geosite:t2-ru	3
 geosite:tbank-ru	112
 geosite:telegram	21	(перенос из апстрима)
-geosite:tiktok	37	(перенос из апстрима)
+geosite:tiktok	40	(перенос из апстрима)
 geosite:tld-ru	11
 geosite:twitch	35	(перенос из апстрима)
 geosite:twitter	24	(перенос из апстрима)
