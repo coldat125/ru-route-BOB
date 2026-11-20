@@ -1,11 +1,11 @@
-geoip-lite:direct	25293	(для клиентов)
-geoip:direct	25293	(сводная: private, ru)
+geoip-lite:direct	25393	(для клиентов)
+geoip:direct	25393	(сводная: private, ru)
 geoip:facebook	122
-geoip:google	7979
+geoip:google	7090
 geoip:netflix	122
 geoip:private	28
-geoip:proxy	8255	(сводная: facebook, google, netflix, telegram, twitter)
-geoip:ru	25265
+geoip:proxy	7366	(сводная: facebook, google, netflix, telegram, twitter)
+geoip:ru	25365
 geoip:telegram	12
 geoip:twitter	20
 geosite-lite:ru	2152	(для клиентов)
