@@ -21,7 +21,7 @@ geosite:bestchange	3
 geosite:betboom	2
 geosite:bitrix	11
 geosite:category-ads	850	(перенос из апстрима)
-geosite:category-ai-!cn	219	(перенос из апстрима)
+geosite:category-ai-!cn	220	(перенос из апстрима)
 geosite:category-ai-ru	12
 geosite:category-bank-ru	358
 geosite:category-betting-ru	13
@@ -54,7 +54,7 @@ geosite:genotek-ru	9
 geosite:geolocation-ru	2152	(алиас direct)
 geosite:gismeteo	7
 geosite:github	66	(перенос из апстрима)
-geosite:google	1080	(перенос из апстрима)
+geosite:google	1081	(перенос из апстрима)
 geosite:google-play	10	(перенос из апстрима)
 geosite:group-ib	30
 geosite:headhunter	8
@@ -91,7 +91,7 @@ geosite:ozon	63
 geosite:patreon	4	(перенос из апстрима)
 geosite:positive-technologies	3
 geosite:private	133	(перенос из апстрима)
-geosite:proxy	1415	(сводная: из 26 категорий)
+geosite:proxy	1416	(сводная: из 26 категорий)
 geosite:reddit	12	(перенос из апстрима)
 geosite:regru	3
 geosite:rossiyasegodnya	17
